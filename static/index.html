@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Web Gallery</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/cols.css" />
+  </head>
+  <body>
+    <nav class="main-navbar">
+      <div class="navbar-title">Web Gallery</div>
+      <div class="navbar-links">
+        <button id="navAllGalleries" class="nav-btn">All Galleries</button>
+        <button id="navCurrentGallery" class="nav-btn">Home Page</button>
+      </div>
+      <div class="navbar-auth">
+        <span id="userInfo" class="user-info" style="display: none"></span>
+        <button id="loginBtn" class="login-btn" style="display: none">
+          Login / Sign Up
+        </button>
+        <button id="logoutBtn" class="logout-btn" style="display: none">
+          Logout
+        </button>
+      </div>
+    </nav>
+    <main class="row">
+      <div class="col-12 col-md-8 offset-md-2">
+        <section
+          id="galleryBrowser"
+          class="gallery-browser"
+          style="display: none"
+        >
+          <h2>Browse Galleries</h2>
+          <div id="galleryList" class="gallery-list"></div>
+        </section>
+        <section id="galleryView" class="current-gallery" style="display: none">
+          <div id="galleryInfo" class="gallery-info">
+            <h3 id="galleryTitle">All Images</h3>
+            <p id="galleryOwner"></p>
+          </div>
+          <div class="text-center">
+            <button id="toggleAddImage">Add Image</button>
+          </div>
+          <form id="addImageForm" style="display: none">
+            <input
+              type="text"
+              id="imageTitle"
+              placeholder="Image Title"
+              required
+            />
+            <input type="file" id="imageFile" accept="image/*" required />
+            <button type="submit">Add to Gallery</button>
+          </form>
+          <section id="imageDisplay">
+            <div id="loadingIndicator" class="loading" style="display: none">
+              <div class="loading-spinner"></div>
+            </div>
+            <div id="errorMessage" class="error" style="display: none"></div>
+            <div id="imageContainer" style="display: none">
+              <img id="currentImage" class="gallery-image" src="" alt="" />
+              <div class="image-info">
+                <h2 id="displayTitle"></h2>
+                <p id="displayAuthor"></p>
+                <div class="nav-buttons">
+                  <button id="nextImage">Next</button>
+                  <button id="prevImage">Previous</button>
+                  <button id="deleteImage">Delete</button>
+                </div>
+                <div id="imageCount" class="image-count"></div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <form id="commentForm">
+              <textarea
+                id="commentText"
+                placeholder="Your Comment"
+                required
+              ></textarea>
+              <button type="submit">Post Comment</button>
+            </form>
+          </section>
+          <section id="commentSection">
+            <h3>Comments</h3>
+            <div id="commentsLoading" class="loading" style="display: none">
+              <div class="loading-spinner"></div>
+            </div>
+            <ul id="commentList"></ul>
+            <div class="nav-buttons">
+              <button id="nextComments">Next</button>
+              <button id="prevComments">Previous</button>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+    <script src="js/api-service.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/meact.js"></script>
+    <script src="js/controller.js"></script>
+    <footer class="row site-footer">
+      <div class="col-12 text-center">
+        <p><a href="credits.html">View Credits</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login/Signup - Web Gallery</title>
+    <link rel="stylesheet" href="styles/style.css" />
+  </head>
+  <body>
+    <div class="auth-container">
+      <h2 id="authTitle">Login</h2>
+
+      <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Username" required />
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
+
+      <form id="signupForm" style="display: none">
+        <input
+          type="text"
+          id="signupUsername"
+          placeholder="Username (3-30 chars, letters/numbers/_ only)"
+          required
+        />
+        <input type="email" id="signupEmail" placeholder="Email" required />
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="Password"
+          required
+        />
+        <div class="requirements">
+          <p><strong>Requirements:</strong></p>
+          <ul>
+            <li>
+              Username: 3-30 characters, letters, numbers, and underscore only
+            </li>
+            <li>Email: Must be a valid email address</li>
+            <li>Password: At least 6 characters</li>
+          </ul>
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <div id="authError" class="auth-error"></div>
+
+      <p id="toggleText">
+        Don't have an account? <a href="#" id="toggleAuth">Sign up</a>
+      </p>
+    </div>
+
+    <script src="js/auth-service.js"></script>
+    <script>
+      let isLoginMode = true;
+
+      // Validation functions
+      function validateUsername(username) {
+        if (username.length < 3 || username.length > 30) {
+          return "Username must be between 3 and 30 characters";
+        }
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+          return "Username can only contain letters, numbers, and underscore";
+        }
+        return null;
+      }
+
+      function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return "Please enter a valid email address";
+        }
+        return null;
+      }
+
+      function validatePassword(password) {
+        if (password.length < 6) {
+          return "Password must be at least 6 characters";
+        }
+        return null;
+      }
+
+      function toggleMode() {
+        isLoginMode = !isLoginMode;
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        const authTitle = document.getElementById("authTitle");
+        const toggleText = document.getElementById("toggleText");
+        const toggleLink = document.getElementById("toggleAuth");
+        const errorDiv = document.getElementById("authError");
+
+        // Clear any previous errors
+        errorDiv.textContent = "";
+
+        if (isLoginMode) {
+          loginForm.style.display = "flex";
+          signupForm.style.display = "none";
+          authTitle.textContent = "Login";
+          toggleText.innerHTML =
+            'Don\'t have an account? <a href="#" id="toggleAuth">Sign up</a>';
+        } else {
+          loginForm.style.display = "none";
+          signupForm.style.display = "flex";
+          authTitle.textContent = "Sign Up";
+          toggleText.innerHTML =
+            'Already have an account? <a href="#" id="toggleAuth">Login</a>';
+        }
+
+        // Re-attach event listener to the new toggle link
+        document
+          .getElementById("toggleAuth")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            toggleMode();
+          });
+      }
+
+      // Login form handler
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const username = document.getElementById("loginUsername").value;
+          const password = document.getElementById("loginPassword").value;
+          const errorDiv = document.getElementById("authError");
+          errorDiv.textContent = "";
+
+          if (!username || !password) {
+            errorDiv.textContent = "Please fill in all fields";
+            return;
+          }
+
+          try {
+            await authService.login(username, password);
+            window.location.href = "index.html";
+          } catch (err) {
+            errorDiv.textContent = err.message || "Login failed";
+          }
+        });
+
+      // Signup form handler
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const username = document.getElementById("signupUsername").value;
+          const email = document.getElementById("signupEmail").value;
+          const password = document.getElementById("signupPassword").value;
+          const errorDiv = document.getElementById("authError");
+          errorDiv.textContent = "";
+
+          // Client-side validation
+          const usernameError = validateUsername(username);
+          if (usernameError) {
+            errorDiv.textContent = usernameError;
+            return;
+          }
+
+          const emailError = validateEmail(email);
+          if (emailError) {
+            errorDiv.textContent = emailError;
+            return;
+          }
+
+          const passwordError = validatePassword(password);
+          if (passwordError) {
+            errorDiv.textContent = passwordError;
+            return;
+          }
+
+          try {
+            await authService.signup(username, email, password);
+            window.location.href = "index.html";
+          } catch (err) {
+            errorDiv.textContent = err.message || "Signup failed";
+          }
+        });
+
+      // Toggle link handler
+      document
+        .getElementById("toggleAuth")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          toggleMode();
+        });
+    </script>
+  </body>
+</html>
